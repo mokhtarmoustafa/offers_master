@@ -33,4 +33,8 @@
     <string name="description">Description:</string>
     <string name="organization">Organization:</string>
     <string name="salary">Salary</string>
+    <string name="offer">Offer</string>
+    <string name="equity">Equity:</string>
+    <string name="other_benefits">Other Benefits:</string>
+    <string name="apply">Apply</string>
 </resources>

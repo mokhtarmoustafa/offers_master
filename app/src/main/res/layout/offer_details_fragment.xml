@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".ui.offer.detail.OfferDetailsFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tv_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/description"
+            android:textColor="@color/purple_700"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@id/start"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_description_data"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:ellipsize="end"
+            android:lines="3"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/end"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/tv_description"
+            app:layout_constraintTop_toTopOf="@+id/tv_description"
+            tools:text="Dummy DataDummy DataDummy DataDummy DataDummy DataDummy DataDummy Data" />
+
+        <TextView
+            android:id="@+id/tv_organization"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/organization"
+            android:textColor="@color/purple_700"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="@+id/start"
+            app:layout_constraintTop_toBottomOf="@+id/tv_description_data" />
+
+        <TextView
+            android:id="@+id/tv_organization_data"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:ellipsize="end"
+            android:lines="2"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_organization"
+            app:layout_constraintTop_toTopOf="@+id/tv_organization"
+            tools:text="Dummy Data" />
+
+        <TextView
+            android:id="@+id/tv_salary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/salary"
+            android:textColor="@color/purple_700"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="@+id/start"
+            app:layout_constraintTop_toBottomOf="@+id/tv_organization_data" />
+
+        <TextView
+            android:id="@+id/tv_salary_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:ellipsize="end"
+            android:lines="1"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_salary"
+            app:layout_constraintStart_toEndOf="@+id/tv_salary"
+            app:layout_constraintTop_toTopOf="@+id/tv_salary"
+            tools:text="2000$/month" />
+
+        <TextView
+            android:id="@+id/tv_equity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/equity"
+            android:textColor="@color/purple_700"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="@+id/start"
+            app:layout_constraintTop_toBottomOf="@+id/tv_salary_data" />
+
+        <TextView
+            android:id="@+id/tv_equity_data"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:ellipsize="end"
+            android:lines="1"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_equity"
+            app:layout_constraintEnd_toStartOf="@+id/end"
+            app:layout_constraintStart_toEndOf="@+id/tv_equity"
+            app:layout_constraintTop_toTopOf="@+id/tv_equity"
+            tools:text="Equity ........" />
+
+        <TextView
+            android:id="@+id/tv_bonus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Bonus"
+            android:textColor="@color/purple_700"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="@+id/start"
+            app:layout_constraintTop_toBottomOf="@+id/tv_equity_data" />
+
+        <TextView
+            android:id="@+id/tv_bonus_data"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:ellipsize="end"
+            android:lines="1"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_bonus"
+            app:layout_constraintEnd_toStartOf="@+id/end"
+            app:layout_constraintStart_toEndOf="@+id/tv_bonus"
+            app:layout_constraintTop_toTopOf="@+id/tv_bonus"
+            tools:text="Bonus ........" />
+
+        <TextView
+            android:id="@+id/tv_other_benefits"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/other_benefits"
+            android:textColor="@color/purple_700"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="@+id/start"
+            app:layout_constraintTop_toBottomOf="@+id/tv_bonus_data" />
+
+        <TextView
+            android:id="@+id/tv_other_benefits_data"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:ellipsize="end"
+            android:lines="4"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/end"
+            app:layout_constraintStart_toEndOf="@+id/tv_other_benefits"
+            app:layout_constraintTop_toTopOf="@+id/tv_other_benefits"
+            tools:text="Other Benefits ........" />
+
+        <Button
+            android:id="@+id/btn_Apply"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="64dp"
+            android:text="@string/apply"
+            app:layout_constraintEnd_toStartOf="@+id/end"
+            app:layout_constraintStart_toStartOf="@+id/start"
+            app:layout_constraintTop_toBottomOf="@+id/tv_other_benefits" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="16dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="16dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
