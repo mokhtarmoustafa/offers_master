@@ -28,4 +28,6 @@
     <string name="telephone">Telephone</string>
     <string name="role">Rule</string>
     <string name="create">Create</string>
+    <string name="forget_password">Forget Password</string>
+    <string name="confirm">Confirm</string>
 </resources>
