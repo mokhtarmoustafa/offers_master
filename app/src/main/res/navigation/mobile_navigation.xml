@@ -26,10 +26,16 @@
         android:id="@+id/splashFragment"
         android:name="com.twoam.offers.ui.SplashFragment"
         android:label="fragment_splash"
-        tools:layout="@layout/fragment_splash" />
+        tools:layout="@layout/fragment_splash" >
+        <action
+            android:id="@+id/action_splashFragment_to_loginFragment2"
+            app:destination="@id/loginFragment"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/splashFragment"/>
+    </fragment>
     <fragment
-        android:id="@+id/loginFragment2"
-        android:name="com.twoam.offers.LoginFragment"
+        android:id="@+id/loginFragment"
+        android:name="com.twoam.offers.ui.login.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" />
 
