@@ -1,4 +1,4 @@
-package com.twoam.offers.ui.notifications
+package com.twoam.offers.ui.profile
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

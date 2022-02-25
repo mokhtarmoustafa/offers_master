@@ -1,4 +1,4 @@
-package com.twoam.offers.ui.dashboard
+package com.twoam.offers.ui.inprogress
 
 import android.os.Bundle
 import android.view.LayoutInflater

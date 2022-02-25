@@ -1,12 +1,11 @@
-package com.twoam.offers
+package com.twoam.offers.ui
 
 import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.twoam.offers.R
 import com.twoam.offers.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {

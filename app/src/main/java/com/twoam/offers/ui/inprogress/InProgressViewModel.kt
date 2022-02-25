@@ -1,4 +1,4 @@
-package com.twoam.offers.ui.dashboard
+package com.twoam.offers.ui.inprogress
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

@@ -1,4 +1,4 @@
-package com.twoam.offers.ui.notifications
+package com.twoam.offers.ui.profile
 
 import android.os.Bundle
 import android.view.LayoutInflater

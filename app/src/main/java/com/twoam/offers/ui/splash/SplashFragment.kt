@@ -1,4 +1,4 @@
-package com.twoam.offers.ui
+package com.twoam.offers.ui.splash
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

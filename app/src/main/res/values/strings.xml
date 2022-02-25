@@ -23,4 +23,9 @@
     <string name="employee">Employee</string>
     <string name="manager">Manager</string>
     <string name="forget_password">Forget Password</string>
+    <string name="content">content</string>
+    <string name="name">Name</string>
+    <string name="telephone">Telephone</string>
+    <string name="role">Rule</string>
+    <string name="create">Create</string>
 </resources>
