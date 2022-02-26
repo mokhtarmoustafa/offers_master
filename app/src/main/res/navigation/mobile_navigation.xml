@@ -6,7 +6,7 @@
     app:startDestination="@id/splashFragment">
 
     <fragment
-        android:id="@+id/navigation_home"
+        android:id="@+id/homeFragment"
         android:name="com.twoam.offers.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" >
@@ -16,13 +16,13 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_inprogress"
+        android:id="@+id/inProgressFragment"
         android:name="com.twoam.offers.ui.inprogress.InProgressFragment"
         android:label="@string/title_inprogress"
         tools:layout="@layout/fragment_inprogress" />
 
     <fragment
-        android:id="@+id/navigation_profile"
+        android:id="@+id/profileFragment"
         android:name="com.twoam.offers.ui.profile.ProfileFragment"
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_profile" />
@@ -32,8 +32,13 @@
         android:label="fragment_splash"
         tools:layout="@layout/fragment_splash">
         <action
-            android:id="@+id/action_splashFragment_to_loginFragment2"
+            android:id="@+id/action_splashFragment_to_loginFragment"
             app:destination="@id/loginFragment"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_splashFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
             app:popUpTo="@id/splashFragment"
             app:popUpToInclusive="true" />
     </fragment>

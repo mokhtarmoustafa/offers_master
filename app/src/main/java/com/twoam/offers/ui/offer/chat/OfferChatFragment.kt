@@ -20,13 +20,9 @@ class OfferChatFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        viewModel = ViewModelProvider(this).get(OfferChatViewModel::class.java)
         return inflater.inflate(R.layout.offer_chat_fragment, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(OfferChatViewModel::class.java)
-        // TODO: Use the ViewModel
-    }
 
 }

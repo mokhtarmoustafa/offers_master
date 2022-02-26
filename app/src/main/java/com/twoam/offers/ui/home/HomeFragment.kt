@@ -8,6 +8,10 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.twoam.offers.R
 import com.twoam.offers.databinding.FragmentHomeBinding
 
@@ -30,6 +34,8 @@ class HomeFragment : Fragment() {
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
+        val navView= activity?.findViewById(R.id.nav_view) as  BottomNavigationView
+        navView.visibility=View.VISIBLE
 
         return  binding.root
     }
