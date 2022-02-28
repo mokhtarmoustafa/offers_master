@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -14,6 +15,9 @@ import com.twoam.offers.R
 import com.twoam.offers.data.model.User
 import com.twoam.offers.databinding.FragmentSplashBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class SplashFragment : Fragment() {
@@ -21,20 +25,15 @@ class SplashFragment : Fragment() {
     //region variables
     val TIMER_DURATION = 1000L
     private lateinit var binding: FragmentSplashBinding
-    private lateinit var viewModel: SplashViewModel
+    private val viewModel: SplashViewModel by viewModels()
 
     //endregion
     //region events
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(SplashViewModel::class.java)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
         binding = FragmentSplashBinding.inflate(layoutInflater, container, false)
 
         object : CountDownTimer(TIMER_DURATION, 1000) {
@@ -51,11 +50,14 @@ class SplashFragment : Fragment() {
     private fun checkUserLogged() {
         viewModel.userData.observe(this, Observer { userData ->
             Log.d(TAG, "onCreateView: $userData")
-            if (userData == null) {
+//            if (userData != null) {
                 findNavController().navigate(R.id.action_splashFragment_to_homeFragment)
-            } else
-                findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
-        })
+//            }
+//            else
+//                findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
+        }
+    )
+
     }
     //region helper functions
 
@@ -63,4 +65,10 @@ class SplashFragment : Fragment() {
     companion object {
         private const val TAG = "SplashFragment"
     }
+
+
 }
+
+
+
+

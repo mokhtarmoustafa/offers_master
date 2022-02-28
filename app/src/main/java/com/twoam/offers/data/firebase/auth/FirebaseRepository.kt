@@ -1,22 +1,37 @@
 package com.twoam.offers.data.firebase.auth
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.twoam.offers.data.model.User
+import com.twoam.offers.util.DataState
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
+import java.lang.Exception
 
 
 class FirebaseRepository(private val auth: FirebaseAuth) : AuthUserActions {
-private  var currentUser:User? = null
-    override fun loginUser(email: String, password: String, onResult: (Boolean) -> Unit) {
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener {
-                onResult(it.isComplete && it.isSuccessful)
-            }
+    private var currentUser: User? = null
 
+
+    override fun loginUser(email: String, password: String, onResult: (Boolean) -> Unit) {
+
+            auth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener {
+                    Log.d(TAG, "loginUser: ${it.isComplete && it.isSuccessful}")
+                    it.isComplete && it.isSuccessful
+                }
 
     }
 
@@ -43,7 +58,7 @@ private  var currentUser:User? = null
         Log.d(TAG, "getUserData: $user")
 
         user?.let {
-                currentUser = User(user.displayName!!, user.email!!, user.displayName!!)
+            currentUser = User(user.displayName!!, user.email!!, user.displayName!!)
         }
         return currentUser
     }

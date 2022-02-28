@@ -22,11 +22,10 @@ object AuthModule {
     @Singleton
     fun provideFirebaseUser(auth: FirebaseAuth) = auth.currentUser!!
 
-@Provides
-@Singleton
-fun provideAuthActionsManager(auth: FirebaseAuth):FirebaseRepository
-{
-    return FirebaseRepository(auth)
-}
+    @Provides
+    @Singleton
+    fun provideAuthActionsManager(auth: FirebaseAuth): FirebaseRepository {
+        return FirebaseRepository(auth)
+    }
 
 }
