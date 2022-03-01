@@ -5,24 +5,28 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.twoam.offers.data.firebase.auth.FirebaseRepository
+import com.twoam.offers.data.firebase.auth.FirebaseRepositoryImp
 import com.twoam.offers.data.model.User
+import com.twoam.offers.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SplashViewModel @Inject constructor(authActionManager: FirebaseRepository) : ViewModel() {
-    private var _userData = MutableLiveData<User>()
-    val userData: LiveData<User> get() = _userData
+class SplashViewModel @Inject constructor(private val authActionManager: FirebaseRepositoryImp) :
+    ViewModel() {
+    private var _userData = MutableLiveData<Resource<User?>>()
+    val userData: LiveData<Resource<User?>> get() = _userData
 
 
     init {
         viewModelScope.launch {
-            _userData.value = authActionManager.getUserData()
             Log.d(TAG, ": User Data: ${_userData.value}")
-        }
+            val userData = authActionManager.getUserData()
+            _userData.postValue(userData)
 
+
+        }
     }
 
 

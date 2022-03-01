@@ -2,6 +2,7 @@ package com.twoam.offers.di.auth
 
 import com.google.firebase.auth.FirebaseAuth
 import com.twoam.offers.data.firebase.auth.FirebaseRepository
+import com.twoam.offers.data.firebase.auth.FirebaseRepositoryImp
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,14 +19,11 @@ object AuthModule {
         return FirebaseAuth.getInstance()
     }
 
-    @Provides
-    @Singleton
-    fun provideFirebaseUser(auth: FirebaseAuth) = auth.currentUser!!
 
     @Provides
     @Singleton
     fun provideAuthActionsManager(auth: FirebaseAuth): FirebaseRepository {
-        return FirebaseRepository(auth)
+        return FirebaseRepositoryImp(auth)
     }
 
 }

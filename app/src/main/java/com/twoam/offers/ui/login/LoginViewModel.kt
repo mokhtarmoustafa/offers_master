@@ -5,19 +5,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.twoam.offers.data.firebase.auth.FirebaseRepository
-import com.twoam.offers.util.DataState
+import com.twoam.offers.data.firebase.auth.FirebaseRepositoryImp
+import com.twoam.offers.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(private val firebaseRepository: FirebaseRepository) :
+class LoginViewModel @Inject constructor(private val firebaseRepositoryImp: FirebaseRepositoryImp) :
     ViewModel() {
 
     //region variables
@@ -29,13 +24,13 @@ class LoginViewModel @Inject constructor(private val firebaseRepository: Firebas
     //region helper functions
 
     fun login(email: String, password: String) {
-        DataState.Loading
-        viewModelScope.launch {
-            firebaseRepository.loginUser(email, password){result->
-                Log.d(TAG, "login: $result")
-                _success.value=result
-            }
-        }
+
+//        viewModelScope.launch {
+//            firebaseRepositoryImp.loginUser(email, password){ result->
+//                Log.d(TAG, "login: $result")
+//                _success.value=result
+//            }
+//        }
     }
     //endregion
 

@@ -62,48 +62,29 @@ class LoginFragment : Fragment() {
     }
 
     private fun login() {
-        val email = binding.etEmail.text?.trim().toString()
-        val password = binding.etPassword.text?.trim().toString()
-
-        viewModel.login(email, password)
-        binding.progressBar.visibility = View.VISIBLE
-        viewModel.success.observe(this, Observer { result ->
-            if(result)
-            {
-                binding.progressBar.visibility = View.INVISIBLE
-                findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
-            }
-            else
-            {
-                Toast.makeText(
-                        requireContext(),
-                        "You are not register yet! PLEASE create a new account",
-                        Toast.LENGTH_SHORT
-                    ).show()
-            }
-//            when (result) {
-//                DataState.Loading -> {
-//                    binding.progressBar.visibility = View.VISIBLE
-//                }
-//                DataState.Success(result) -> {
-//                    binding.progressBar.visibility = View.INVISIBLE
-//                    findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
-//                }
-//                DataState.Error(result.toString()) -> {
-//                    binding.progressBar.visibility = View.INVISIBLE
-//                    Toast.makeText(
+//        val email = binding.etEmail.text?.trim().toString()
+//        val password = binding.etPassword.text?.trim().toString()
+//
+//        viewModel.login(email, password)
+//        binding.progressBar.visibility = View.VISIBLE
+//        viewModel.success.observe(this, Observer { result ->
+//            if(result)
+//            {
+//                binding.progressBar.visibility = View.INVISIBLE
+//                findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+//            }
+//            else
+//            {
+//                Toast.makeText(
 //                        requireContext(),
 //                        "You are not register yet! PLEASE create a new account",
 //                        Toast.LENGTH_SHORT
 //                    ).show()
-//                }
-//                else -> {
-//                    binding.progressBar.visibility = View.INVISIBLE
-//                }
 //            }
-
-
-        })
+//
+//
+//
+//        })
     }
 
     //endregion
