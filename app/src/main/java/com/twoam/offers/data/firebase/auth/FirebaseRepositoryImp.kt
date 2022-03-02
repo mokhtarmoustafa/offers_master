@@ -20,7 +20,6 @@ class FirebaseRepositoryImp @Inject constructor(private val auth: FirebaseAuth) 
     private var currentUser: User? = null
 
 
-
     override suspend fun loginUser(email: String, password: String): Resource<User?> =
         withContext(Dispatchers.IO) {
             Resource.Loading
@@ -34,9 +33,14 @@ class FirebaseRepositoryImp @Inject constructor(private val auth: FirebaseAuth) 
         }
 
 
-    override suspend fun createNewUser(user: User): Resource<Boolean> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun createNewUser(user: User): Resource<Boolean> =
+        withContext(Dispatchers.IO) {
+            Resource.Loading
+            safeCall {
+                auth.createUserWithEmailAndPassword(user.email, user.password).await()
+                Resource.Success(true)
+            }
+        }
 
 
     override suspend fun getUserData(): Resource<User?> =
@@ -55,7 +59,7 @@ class FirebaseRepositoryImp @Inject constructor(private val auth: FirebaseAuth) 
         }
 
     override suspend fun logOut(): Resource<Boolean> {
-      return  withContext(Dispatchers.IO) {
+        return withContext(Dispatchers.IO) {
             safeCall {
                 auth.signOut()
                 Resource.Success(true)

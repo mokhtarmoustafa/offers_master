@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -16,9 +17,10 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
+
     //region variables
     private lateinit var binding: FragmentLoginBinding
-    private lateinit var viewModel: LoginViewModel
+    private  val  viewModel: LoginViewModel by viewModels()
     //endregion
 
     //region events
@@ -35,12 +37,12 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
-
         binding.btnLogin.setOnClickListener {
             if (validateAll())
                 login()
         }
+        
+        binding.tvRegister.setOnClickListener { findNavController().navigate(R.id.action_loginFragment_to_registerFragment) }
     }
 
     //endregion
@@ -67,7 +69,7 @@ class LoginFragment : Fragment() {
         viewModel.login(email, password)
         binding.progressBar.visibility = View.VISIBLE
 
-        viewModel.success.observe(this, Observer { result ->
+        viewModel.success.observe(this, { result ->
             when (result) {
                 is Resource.Loading -> {
                     binding.progressBar.visibility = View.VISIBLE

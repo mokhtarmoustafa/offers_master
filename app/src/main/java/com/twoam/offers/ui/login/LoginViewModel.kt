@@ -35,6 +35,8 @@ class LoginViewModel @Inject constructor(private val firebaseRepositoryImp: Fire
             _success.postValue(user)
         }
     }
+
+
     //endregion
 
     companion object {

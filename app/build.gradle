@@ -75,7 +75,6 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:$fragment_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.1"
 
-
 }
 kapt {
     correctErrorTypes = true

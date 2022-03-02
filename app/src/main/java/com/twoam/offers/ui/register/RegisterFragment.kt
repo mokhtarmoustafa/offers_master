@@ -5,56 +5,156 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.Toast
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.twoam.offers.R
+import com.twoam.offers.data.model.User
+import com.twoam.offers.databinding.FragmentRegisterBinding
+import com.twoam.offers.util.Resource
+import com.twoam.offers.util.isEmailValid
+import com.twoam.offers.util.isNotEmpty
+import com.twoam.offers.util.isPasswordValid
+import java.util.*
+import javax.xml.validation.Validator
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [RegisterFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class RegisterFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    //region variables
+    private val viewModel: RegisterViewModel by viewModels()
+    private lateinit var binding: FragmentRegisterBinding
+    //endregion
 
+    //region events
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_register, container, false)
+    ): View {
+        binding = FragmentRegisterBinding.inflate(layoutInflater, container, false)
+
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment RegisterFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            RegisterFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        init()
+    }
+
+    private fun init() {
+        getRules()
+
+        binding.btnLogin.setOnClickListener {
+            register()
+        }
+        binding.tvLogin.setOnClickListener {
+            navigateToLogin()
+        }
+    }
+
+    private fun navigateToLogin() {
+        findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+    }
+    //endregion
+
+    //region helper functions
+
+    private fun register() {
+        if (!validateAll())
+            return
+        val name = binding.etName.text.toString().trim()
+        val email = binding.etEmail.text.toString().trim()
+        val telephone = binding.etTelephone.text.toString().trim()
+        val rule = binding.etRule.text.toString().trim()
+        val password = binding.etPassword.text.toString().trim()
+
+        viewModel.register(User(name, email, password, telephone, rule, password))
+
+        viewModel.success.observe(this, { result ->
+
+            when (result) {
+                is Resource.Loading -> binding.progress.visibility = View.VISIBLE
+                is Resource.Success -> {
+                    binding.progress.visibility = View.INVISIBLE
+                    findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+                }
+                is Resource.Failure -> {
+                    binding.progress.visibility = View.INVISIBLE
+                    Toast.makeText(
+                        requireContext(),
+                        "Error ${result.exception.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
+
+        })
+    }
+
+    private fun validateAll(): Boolean {
+        if (!isNotEmpty(binding.etName.text.toString().trim())) {
+            Toast.makeText(requireContext(), "Name can't be empty.", Toast.LENGTH_SHORT).show()
+            binding.etName.requestFocus()
+            return false
+        } else if (!isNotEmpty(
+                binding.etEmail.text.toString().trim()
+            ) || !isEmailValid(binding.etEmail.text.toString().trim())
+        ) {
+            Toast.makeText(requireContext(), "Enter valid Email.", Toast.LENGTH_SHORT).show()
+            binding.etEmail.requestFocus()
+            return false
+        } else if (!isNotEmpty(binding.etTelephone.text.toString().trim())) {
+            Toast.makeText(requireContext(), "Telephone can't be empty", Toast.LENGTH_SHORT).show()
+            binding.etTelephone.requestFocus()
+            return false
+        } else if (!isNotEmpty(binding.etRule.text.toString().trim())) {
+            Toast.makeText(requireContext(), "Choose Rule.", Toast.LENGTH_SHORT).show()
+            binding.etEmail.requestFocus()
+            return false
+        } else if (!isNotEmpty(binding.etPassword.text.toString().trim()) || !isPasswordValid(
+                binding.etPassword.text.toString().trim()
+            )
+        ) {
+            Toast.makeText(requireContext(), "Enter valid password.", Toast.LENGTH_SHORT).show()
+            binding.etPassword.requestFocus()
+            return false
+        } else if (!isNotEmpty(
+                binding.etConfirmPassword.text.toString().trim()
+            ) || !isPasswordValid(
+                binding.etConfirmPassword.text.toString().trim()
+            )
+        ) {
+            Toast.makeText(requireContext(), "Enter valid Confirm password.", Toast.LENGTH_SHORT)
+                .show()
+            binding.etConfirmPassword.requestFocus()
+            return false
+        } else if (binding.etPassword.text.toString()
+                .trim() != binding.etConfirmPassword.text.toString().trim()
+        ) {
+            Toast.makeText(
+                requireContext(),
+                "Password and Confirm Password not the same.",
+                Toast.LENGTH_SHORT
+            ).show()
+            binding.etConfirmPassword.requestFocus()
+            return false
+        }
+
+
+        return true
+    }
+
+    private fun getRules() {
+        val rules = requireContext().resources.getStringArray(R.array.Rules)
+        val adapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, rules)
+        binding.etRule.setAdapter(adapter)
+    }
+    //endregion
+
+    companion object {
+        private const val TAG = "RegisterFragment"
     }
 }
