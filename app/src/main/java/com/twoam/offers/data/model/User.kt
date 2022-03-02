@@ -1,3 +1,12 @@
 package com.twoam.offers.data.model
 
-data class User (var name:String="",var email: String="",var password: String="", var userName: String="")
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+data class User(
+    var name: String = "",
+    var email: String = "",
+    var password: String = "",
+    var userName: String = ""
+) : Parcelable

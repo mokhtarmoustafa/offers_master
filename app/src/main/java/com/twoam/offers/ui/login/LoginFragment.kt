@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -62,29 +61,39 @@ class LoginFragment : Fragment() {
     }
 
     private fun login() {
-//        val email = binding.etEmail.text?.trim().toString()
-//        val password = binding.etPassword.text?.trim().toString()
-//
-//        viewModel.login(email, password)
-//        binding.progressBar.visibility = View.VISIBLE
-//        viewModel.success.observe(this, Observer { result ->
-//            if(result)
-//            {
-//                binding.progressBar.visibility = View.INVISIBLE
-//                findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
-//            }
-//            else
-//            {
-//                Toast.makeText(
-//                        requireContext(),
-//                        "You are not register yet! PLEASE create a new account",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//            }
-//
-//
-//
-//        })
+        val email = binding.etEmail.text?.trim().toString()
+        val password = binding.etPassword.text?.trim().toString()
+
+        viewModel.login(email, password)
+        binding.progressBar.visibility = View.VISIBLE
+
+        viewModel.success.observe(this, Observer { result ->
+            when (result) {
+                is Resource.Loading -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                }
+                is Resource.Success -> {
+                    binding.progressBar.visibility = View.INVISIBLE
+                    if (result.data != null)
+                        findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                    else
+                        Toast.makeText(
+                            requireContext(),
+                            "You are not register yet! PLEASE create a new accountttt",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                }
+                is Resource.Failure -> {
+                    binding.progressBar.visibility = View.INVISIBLE
+                    Toast.makeText(
+                        requireContext(),
+                        "You are not register yet! PLEASE create a new account",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+        })
     }
 
     //endregion

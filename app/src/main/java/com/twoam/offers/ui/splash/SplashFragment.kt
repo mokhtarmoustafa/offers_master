@@ -10,18 +10,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.auth.FirebaseAuth
 import com.twoam.offers.R
-import com.twoam.offers.data.model.User
 import com.twoam.offers.databinding.FragmentSplashBinding
 import com.twoam.offers.util.Resource
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class SplashFragment : Fragment() {
@@ -31,8 +25,6 @@ class SplashFragment : Fragment() {
     private lateinit var binding: FragmentSplashBinding
     private val viewModel: SplashViewModel by viewModels()
 
-    //endregion
-    //region events
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,9 +35,9 @@ class SplashFragment : Fragment() {
         object : CountDownTimer(TIMER_DURATION, 1000) {
             override fun onTick(millisUntilFinished: Long) = Unit
 
-            override fun onFinish() =Unit
+            override fun onFinish() = checkUserLogged()
         }.start()
-        checkUserLogged()
+
         return binding.root
     }
 
@@ -57,7 +49,7 @@ class SplashFragment : Fragment() {
             Log.d(TAG, "onCreateView: $result")
             when (result) {
                 is Resource.Success -> {
-                    if(result.data?.name.equals(""))
+                    if (null== result.data)
                         findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
                     else
                         findNavController().navigate(R.id.action_splashFragment_to_homeFragment)
@@ -65,8 +57,12 @@ class SplashFragment : Fragment() {
 
                 }
                 is Resource.Failure -> {
-                    Log.d(TAG, "onCreateView: ${result.message}")
-                    Toast.makeText(requireContext(), "No user Exist ${result.message}", Toast.LENGTH_SHORT).show()
+                    Log.d(TAG, "onCreateView: ${result.exception.message}")
+                    Toast.makeText(
+                        requireContext(),
+                        "No user Exist ${result.exception.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
                 }
                 else -> {}
