@@ -18,17 +18,17 @@ import javax.inject.Inject
 class FirebaseRepositoryImp @Inject constructor(private val auth: FirebaseAuth) :
     FirebaseRepository {
     private var currentUser: User? = null
-    private lateinit var taskResult: Task<AuthResult>
-    private var _userData = MutableLiveData<Resource<User?>>()
-    var userData: LiveData<Resource<User?>> = _userData
+
 
 
     override suspend fun loginUser(email: String, password: String): Resource<User?> =
         withContext(Dispatchers.IO) {
+            Resource.Loading
             safeCall {
                 val result = auth.signInWithEmailAndPassword(email, password).await()
-                Log.d(TAG, "loginUser: ${result.user?.email}")
-                currentUser = User(result.user?.email!!)
+                val user = result.user
+                Log.d(TAG, "loginUser: ${user?.email}")
+                currentUser = User(user?.uid!!, user.displayName!!, user.email!!)
                 Resource.Success(currentUser)
             }
         }
@@ -38,23 +38,7 @@ class FirebaseRepositoryImp @Inject constructor(private val auth: FirebaseAuth) 
         TODO("Not yet implemented")
     }
 
-    //
-//override suspend fun getUserData(): Resource<User?> {
-//
-//    return try {
-//        val user = auth.currentUser
-//        if (user != null) {
-//            currentUser = User(user.displayName!!, user.email!!, user.displayName!!)
-//            Resource.Success(currentUser)
-//        } else
-//            Resource.Success(null)
-//
-//    } catch (exception: Exception) {
-//        Log.d(TAG, "getUserData: ${exception.message}")
-//        Resource.Failure(exception)
-//    }
-//
-//}
+
     override suspend fun getUserData(): Resource<User?> =
         withContext(Dispatchers.IO) {
             safeCall {
@@ -63,8 +47,7 @@ class FirebaseRepositoryImp @Inject constructor(private val auth: FirebaseAuth) 
                     Log.d(TAG, "getUserData: ${user.email}")
                     currentUser = User(user.displayName!!, user.email!!, user.displayName!!)
                     Resource.Success(currentUser)
-                } else
-                {
+                } else {
                     Log.d(TAG, "getUserData: NO SUCH USER EXIST")
                     Resource.Success(null)
                 }
@@ -72,7 +55,12 @@ class FirebaseRepositoryImp @Inject constructor(private val auth: FirebaseAuth) 
         }
 
     override suspend fun logOut(): Resource<Boolean> {
-        TODO("Not yet implemented")
+      return  withContext(Dispatchers.IO) {
+            safeCall {
+                auth.signOut()
+                Resource.Success(true)
+            }
+        }
     }
 
     companion object {
