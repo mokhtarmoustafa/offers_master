@@ -79,7 +79,7 @@ class LoginFragment : Fragment() {
                     else
                         Toast.makeText(
                             requireContext(),
-                            "You are not register yet! PLEASE create a new accountttt",
+                            "You are not register yet! PLEASE Register first.",
                             Toast.LENGTH_SHORT
                         ).show()
                 }
@@ -87,7 +87,7 @@ class LoginFragment : Fragment() {
                     binding.progressBar.visibility = View.INVISIBLE
                     Toast.makeText(
                         requireContext(),
-                        "You are not register yet! PLEASE create a new account",
+                        "Some thing is wrong ${result.exception.message}",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
