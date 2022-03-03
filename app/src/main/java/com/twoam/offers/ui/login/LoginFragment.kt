@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -67,15 +68,15 @@ class LoginFragment : Fragment() {
         val password = binding.etPassword.text?.trim().toString()
 
         viewModel.login(email, password)
-        binding.progressBar.visibility = View.VISIBLE
+        binding.progressBar.isVisible = true
 
         viewModel.success.observe(this, { result ->
             when (result) {
                 is Resource.Loading -> {
-                    binding.progressBar.visibility = View.VISIBLE
+                    binding.progressBar.isVisible = true
                 }
                 is Resource.Success -> {
-                    binding.progressBar.visibility = View.INVISIBLE
+                    binding.progressBar.isVisible = false
                     if (result.data != null)
                         findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
                     else
@@ -86,13 +87,14 @@ class LoginFragment : Fragment() {
                         ).show()
                 }
                 is Resource.Failure -> {
-                    binding.progressBar.visibility = View.INVISIBLE
+                    binding.progressBar.isVisible = false
                     Toast.makeText(
                         requireContext(),
                         "Some thing is wrong ${result.exception.message}",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
+                else -> {}
             }
 
         })

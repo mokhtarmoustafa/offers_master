@@ -3,15 +3,13 @@ package com.twoam.offers.ui.login
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseUser
 import com.twoam.offers.data.firebase.auth.FirebaseRepositoryImp
-import com.twoam.offers.data.model.User
 import com.twoam.offers.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,8 +18,8 @@ class LoginViewModel @Inject constructor(private val firebaseRepositoryImp: Fire
     ViewModel() {
 
     //region variables
-    private var _success = MutableLiveData<Resource<User?>>()
-    val success: LiveData<Resource<User?>> get() = _success
+    private var _success = MutableLiveData<Resource<FirebaseUser?>>()
+    val success: LiveData<Resource<FirebaseUser?>> get() = _success
     //endregion
 
 

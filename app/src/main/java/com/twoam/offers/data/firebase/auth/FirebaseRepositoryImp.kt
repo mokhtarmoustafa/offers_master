@@ -1,43 +1,54 @@
 package com.twoam.offers.data.firebase.auth
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.database.FirebaseDatabase
 import com.twoam.offers.data.model.User
 import com.twoam.offers.util.Resource
+import com.twoam.offers.util.USERS
 import com.twoam.offers.util.safeCall
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
-class FirebaseRepositoryImp @Inject constructor(private val auth: FirebaseAuth) :
+class FirebaseRepositoryImp @Inject constructor(
+    private var auth: FirebaseAuth,
+    private var db: FirebaseDatabase
+) :
     FirebaseRepository {
+
     private var currentUser: User? = null
 
-
-    override suspend fun loginUser(email: String, password: String): Resource<User?> =
+    override suspend fun loginUser(email: String, password: String): Resource<FirebaseUser?> =
         withContext(Dispatchers.IO) {
-            Resource.Loading
+           Resource.Loading
             safeCall {
+                Log.d(TAG, "loginUser: $email  $password")
                 val result = auth.signInWithEmailAndPassword(email, password).await()
                 val user = result.user
-                Log.d(TAG, "loginUser: ${user?.email}")
-                currentUser = User(user?.uid!!, user.displayName!!, user.email!!)
-                Resource.Success(currentUser)
+                Resource.Success(user)
             }
         }
 
 
-    override suspend fun createNewUser(user: User): Resource<Boolean> =
+    override suspend fun authNewUser(user: User): Resource<Boolean> =
         withContext(Dispatchers.IO) {
             Resource.Loading
             safeCall {
-                auth.createUserWithEmailAndPassword(user.email, user.password).await()
+                auth.createUserWithEmailAndPassword(user.email, user.password)
+                    .addOnCompleteListener {
+                        if (it.isSuccessful && it.isComplete) {
+                            auth.currentUser?.updateProfile(
+                                UserProfileChangeRequest.Builder().setDisplayName(user.name)
+                                    .build()
+                            )
+                        }
+                    }
                 Resource.Success(true)
             }
         }
@@ -49,7 +60,8 @@ class FirebaseRepositoryImp @Inject constructor(private val auth: FirebaseAuth) 
                 val user = auth.currentUser
                 if (user != null) {
                     Log.d(TAG, "getUserData: ${user.email}")
-                    currentUser = User(user.displayName!!, user.email!!, user.displayName!!)
+                    currentUser =
+                        User(id = user.uid, name = user.displayName!!, email = user.email!!)
                     Resource.Success(currentUser)
                 } else {
                     Log.d(TAG, "getUserData: NO SUCH USER EXIST")
@@ -65,6 +77,32 @@ class FirebaseRepositoryImp @Inject constructor(private val auth: FirebaseAuth) 
                 Resource.Success(true)
             }
         }
+    }
+
+    override suspend fun createNewUser(user: User): Resource<Boolean> {
+
+        return withContext(Dispatchers.IO) {
+            Resource.Loading
+            safeCall {
+                val authUser = async {
+                    auth.createUserWithEmailAndPassword(user.email, user.password).await()
+                }.await()
+                if (authUser.user != null) {
+                    user.id = authUser.user!!.uid
+                    Log.d(TAG, "createNewUser: ${user.id} ")
+                }
+                db.reference.child(USERS).child(user.id).setValue(user).await()
+                Resource.Success(true)
+            }
+        }
+    }
+
+    override suspend fun updateUser(
+        userId: String,
+        nodeName: String,
+        value: Any
+    ): Resource<Boolean> {
+        TODO("Not yet implemented")
     }
 
     companion object {

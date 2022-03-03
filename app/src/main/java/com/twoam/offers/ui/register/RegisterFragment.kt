@@ -1,14 +1,17 @@
 package com.twoam.offers.ui.register
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.auth.FirebaseAuth
 import com.twoam.offers.R
 import com.twoam.offers.data.model.User
 import com.twoam.offers.databinding.FragmentRegisterBinding
@@ -16,10 +19,11 @@ import com.twoam.offers.util.Resource
 import com.twoam.offers.util.isEmailValid
 import com.twoam.offers.util.isNotEmpty
 import com.twoam.offers.util.isPasswordValid
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import javax.xml.validation.Validator
 
-
+@AndroidEntryPoint
 class RegisterFragment : Fragment() {
 
     //region variables
@@ -39,7 +43,6 @@ class RegisterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         init()
     }
 
@@ -69,19 +72,30 @@ class RegisterFragment : Fragment() {
         val telephone = binding.etTelephone.text.toString().trim()
         val rule = binding.etRule.text.toString().trim()
         val password = binding.etPassword.text.toString().trim()
+        val user = User(
+            name = name,
+            email = email,
+            telephone = telephone,
+            rule = rule,
+            password = password
+        )
+        Log.d(TAG, "register: $user")
+        binding.progress.isVisible = true
+        viewModel.register(user)
 
-        viewModel.register(User(name, email, password, telephone, rule, password))
 
         viewModel.success.observe(this, { result ->
 
             when (result) {
-                is Resource.Loading -> binding.progress.visibility = View.VISIBLE
+                is Resource.Loading -> {
+                    binding.progress.isVisible = true
+                }
                 is Resource.Success -> {
-                    binding.progress.visibility = View.INVISIBLE
-                    findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+                    binding.progress.isVisible = false
+                    findNavController().navigate(R.id.action_registerFragment_to_homeFragment)
                 }
                 is Resource.Failure -> {
-                    binding.progress.visibility = View.INVISIBLE
+                    binding.progress.isVisible = false
                     Toast.makeText(
                         requireContext(),
                         "Error ${result.exception.message}",

@@ -21,9 +21,8 @@ class SplashViewModel @Inject constructor(private val authActionManager: Firebas
 
     init {
         viewModelScope.launch {
-
             val userData = authActionManager.getUserData()
-            Log.d(TAG, ": User Data: ${_userData.value}")
+            Log.d(TAG, ": User Data: ${userData}")
             _userData.postValue(userData)
 
 

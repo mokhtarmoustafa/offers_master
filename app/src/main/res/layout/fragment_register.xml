@@ -47,6 +47,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/ti_name"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -66,6 +67,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/ti_email"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -85,6 +87,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/ti_telephone"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -104,7 +107,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/ti_rule"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -124,6 +127,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/ti_password"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -144,6 +148,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/ti_confirm_password"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
