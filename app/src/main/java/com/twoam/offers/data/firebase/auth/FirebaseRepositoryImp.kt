@@ -29,7 +29,7 @@ class FirebaseRepositoryImp @Inject constructor(
     FirebaseRepository {
 
     private var currentUser: User? = null
-    private var offersList= mutableListOf<Offer>()
+    private var offersList = mutableListOf<Offer>()
 
     override suspend fun loginUser(email: String, password: String): Resource<FirebaseUser?> =
         withContext(Dispatchers.IO) {
@@ -42,6 +42,32 @@ class FirebaseRepositoryImp @Inject constructor(
             }
         }
 
+    override suspend fun newLoginUser(email: String, password: String) =
+        withContext(Dispatchers.IO) {
+            safeCall {
+
+                val user = auth.currentUser
+                if (user != null) {
+                    val userListener = object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            currentUser = snapshot.getValue(User::class.java)
+                            Resource.Success(currentUser)
+                        }
+
+                        override fun onCancelled(error: DatabaseError) = Unit
+                    }
+                    db.reference.child(USERS).child(user.uid)
+                        .addListenerForSingleValueEvent(userListener)
+//                    Log.d(TAG, "getUserData: ${user.email}")
+//                    currentUser =
+//                        User(id = user.uid, name = user.displayName!!, email = user.email!!)
+                    Resource.Success(currentUser)
+                } else {
+                    Log.d(TAG, "getUserData: NO SUCH USER EXIST")
+                    Resource.Success(null)
+                }
+            }
+        }
 
     override suspend fun authNewUser(user: User): Resource<Boolean> =
         withContext(Dispatchers.IO) {
@@ -88,29 +114,44 @@ class FirebaseRepositoryImp @Inject constructor(
     }
 
     override suspend fun createNewUser(user: User): Resource<Boolean> {
-
-        return withContext(Dispatchers.IO) {
+//        return withContext(Dispatchers.IO) {
             Resource.Loading
-            safeCall {
-                val authUser = async {
-                    auth.createUserWithEmailAndPassword(user.email, user.password)
-                }.await()
-                if (authUser.isSuccessful && authUser.isComplete) {
-                    auth.currentUser?.updateProfile(
-                        UserProfileChangeRequest.Builder().setDisplayName(user.name)
-                            .build()
-                    )
-                    if (authUser.result.user != null) {
-                        user.id = authUser.result.user!!.uid
-                        Log.d(TAG, "createNewUser: ${user.id} ")
+          return   safeCall {
+                val authUser =
+                    withContext(Dispatchers.Default) {
+                        auth.createUserWithEmailAndPassword(user.email, user.password).await()
                     }
-                    db.reference.child(USERS).child(user.id).setValue(user).await()
+                if (authUser.user != null) {
+                    user.id = authUser.user!!.uid
+                    Log.d(TAG, "createNewUser: ${user.id} ")
                 }
-
+                db.reference.child(USERS).child(user.id).setValue(user).await()
                 Resource.Success(true)
             }
-        }
+//        }
     }
+//        return withContext(Dispatchers.IO) {
+//            Resource.Loading
+//            safeCall {
+//                val authUser = async {
+//                    auth.createUserWithEmailAndPassword(user.email, user.password)
+//                }.await()
+//                if (authUser.isSuccessful && authUser.isComplete) {
+//                    auth.currentUser?.updateProfile(
+//                        UserProfileChangeRequest.Builder().setDisplayName(user.name)
+//                            .build()
+//                    )
+//                    if (authUser.result.user != null) {
+//                        user.id = authUser.result.user!!.uid
+//                        Log.d(TAG, "createNewUser: ${user.id} ")
+//                    }
+//                    db.reference.child(USERS).child(user.id).setValue(user).await()
+//                }
+//
+//                Resource.Success(true)
+//            }
+//        }
+//    }
 
     override suspend fun updateUser(
         userId: String,
@@ -124,7 +165,7 @@ class FirebaseRepositoryImp @Inject constructor(
     override suspend fun getOffers(userId: String): Resource<List<Offer>> {
         return withContext(Dispatchers.IO) {
             safeCall {
-                val postListener = object : ValueEventListener {
+                val offerListener = object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         dataSnapshot.children.forEach { offerSnapShot ->
                             offerSnapShot.getValue(Offer::class.java)?.let { offersList.add(it) }
@@ -133,7 +174,7 @@ class FirebaseRepositoryImp @Inject constructor(
 
                     override fun onCancelled(databaseError: DatabaseError) = Unit
                 }
-                db.reference.child(OFFERS).addValueEventListener(postListener)
+                db.reference.child(OFFERS).addValueEventListener(offerListener)
                 Resource.Success(offersList)
             }
         }

@@ -11,8 +11,14 @@
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home">
         <action
-            android:id="@+id/action_navigation_home_to_offerDetailsFragment"
-            app:destination="@id/offerFragment" />
+            android:id="@+id/action_homeFragment_to_newOfferFragment"
+            app:destination="@id/newOfferFragment"/>
+        <action
+            android:id="@+id/action_homeFragment_to_offerFragment"
+            app:destination="@id/offerFragment"/>
+        <argument
+            android:name="user"
+            app:argType="com.twoam.offers.data.model.User" />
     </fragment>
 
     <fragment
@@ -25,12 +31,12 @@
         android:id="@+id/profileFragment"
         android:name="com.twoam.offers.ui.profile.ProfileFragment"
         android:label="@string/title_profile"
-        tools:layout="@layout/fragment_profile" >
-        <action android:id="@+id/profileFragment_to_splashFragment"
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/profileFragment_to_splashFragment"
             app:destination="@id/splashFragment"
-            app:popUpToInclusive="true"
             app:popUpTo="@id/homeFragment"
-            />
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -48,6 +54,9 @@
             app:destination="@id/homeFragment"
             app:popUpTo="@id/splashFragment"
             app:popUpToInclusive="true" />
+        <argument
+            android:name="user"
+            app:argType="com.twoam.offers.data.model.User" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -65,6 +74,10 @@
             app:destination="@id/homeFragment"
             app:popUpTo="@id/loginFragment"
             app:popUpToInclusive="true" />
+        <argument
+            android:name="type"
+            app:argType="string" />
+
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -79,6 +92,9 @@
             app:destination="@id/homeFragment"
             app:popUpTo="@id/registerFragment"
             app:popUpToInclusive="true" />
+        <argument
+            android:name="type"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/forgetPasswordFragment"
@@ -89,10 +105,18 @@
         android:id="@+id/offerFragment"
         android:name="com.twoam.offers.ui.offer.OfferFragment"
         android:label="offer_fragment"
-        tools:layout="@layout/offer_fragment" >
+        tools:layout="@layout/offer_fragment">
         <argument
             android:name="offer_data"
             app:argType="com.twoam.offers.data.model.Offer" />
     </fragment>
+    <action
+        android:id="@+id/action_global_homeFragment"
+        app:destination="@id/homeFragment" />
+    <fragment
+        android:id="@+id/newOfferFragment"
+        android:name="com.twoam.offers.ui.offer.newoffer.NewOfferFragment"
+        android:label="new_offer_fragment"
+        tools:layout="@layout/new_offer_fragment" />
 
 </navigation>

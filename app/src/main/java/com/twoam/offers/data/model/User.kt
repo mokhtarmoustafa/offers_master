@@ -11,8 +11,9 @@ data class User(
     var email: String = "",
     var telephone: String = "",
     var rule: String = "",
+    @set:Exclude
     var password: String = "",
-    var type: String = "employee",
+    var type: String = "",
 ) : Parcelable {
     @Exclude
     fun toMap(): Map<String, Any?> {

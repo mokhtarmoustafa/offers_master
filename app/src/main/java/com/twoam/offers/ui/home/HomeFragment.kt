@@ -4,15 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.twoam.offers.R
 import com.twoam.offers.adapter.OffersAdapter
 import com.twoam.offers.data.model.Offer
 import com.twoam.offers.databinding.FragmentHomeBinding
+import com.twoam.offers.util.EMPLOYEE
+import com.twoam.offers.util.MANAGER
 import com.twoam.offers.util.Resource
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -23,6 +28,7 @@ class HomeFragment : Fragment(), OffersAdapter.Interaction {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private var adapter: OffersAdapter = OffersAdapter(this)
+    private val args:HomeFragmentArgs by navArgs()
     //endregion
 
 
@@ -39,6 +45,7 @@ class HomeFragment : Fragment(), OffersAdapter.Interaction {
 
         val navView = activity?.findViewById(R.id.nav_view) as BottomNavigationView
         navView.visibility = View.VISIBLE
+        binding.btnAddOffer.isVisible= args.user.type == MANAGER
 
         return binding.root
     }
@@ -46,7 +53,8 @@ class HomeFragment : Fragment(), OffersAdapter.Interaction {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         adapter = OffersAdapter(this)
-        getOffers()
+
+//        getOffers()
     }
 
     override fun onDestroyView() {
@@ -55,7 +63,7 @@ class HomeFragment : Fragment(), OffersAdapter.Interaction {
     }
 
     override fun onItemSelected(position: Int, offer: Offer) {
-        val actions = HomeFragmentDirections.actionNavigationHomeToOfferDetailsFragment(offer)
+        val actions = HomeFragmentDirections.actionHomeFragmentToOfferFragment(offer)
         findNavController().navigate(actions)
     }
 
@@ -69,11 +77,20 @@ class HomeFragment : Fragment(), OffersAdapter.Interaction {
             when (it) {
                 is Resource.Loading -> {}
                 is Resource.Success -> {
+                    binding.tvEmptyData.isVisible=false
                     adapter.submitList(it.data)
                 }
-                is Resource.Failure -> {}
+                is Resource.Failure -> {
+                    Toast.makeText(requireContext(), it.exception.message, Toast.LENGTH_SHORT)
+                        .show()
+                }
             }
         })
+    }
+
+    private fun newOffer()
+    {
+        findNavController().navigate(R.id.action_homeFragment_to_newOfferFragment)
     }
     //endregion
 

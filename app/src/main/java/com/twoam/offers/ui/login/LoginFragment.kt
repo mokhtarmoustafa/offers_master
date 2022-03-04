@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.twoam.offers.R
+import com.twoam.offers.data.model.User
 import com.twoam.offers.databinding.FragmentLoginBinding
 import com.twoam.offers.util.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,7 +22,7 @@ class LoginFragment : Fragment() {
 
     //region variables
     private lateinit var binding: FragmentLoginBinding
-    private  val  viewModel: LoginViewModel by viewModels()
+    private val viewModel: LoginViewModel by viewModels()
     //endregion
 
     //region events
@@ -43,9 +44,14 @@ class LoginFragment : Fragment() {
             if (validateAll())
                 login()
         }
-        
-        binding.tvRegister.setOnClickListener { findNavController().navigate(R.id.action_loginFragment_to_registerFragment) }
+
+        binding.tvRegister.setOnClickListener {
+            hideKeyboard()
+            register()
+        }
     }
+
+
 
     //endregion
 //region helper functions
@@ -79,7 +85,11 @@ class LoginFragment : Fragment() {
                 is Resource.Success -> {
                     binding.progressBar.isVisible = false
                     if (result.data != null)
-                        findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                    {
+//                        val user=User(id=result.data.uid,email= result.data.email!!,name= result.data.displayName!!)
+                        val action=LoginFragmentDirections.actionLoginFragmentToHomeFragment(User())
+                        findNavController().navigate(action)
+                    }
                     else
                         Toast.makeText(
                             requireContext(),
@@ -101,6 +111,15 @@ class LoginFragment : Fragment() {
         })
     }
 
+    private fun register() {
+        val type = if (binding.rgType.checkedRadioButtonId == R.id.rb_employee)
+            EMPLOYEE
+        else
+            MANAGER
+
+        val action = LoginFragmentDirections.actionLoginFragmentToRegisterFragment(type)
+        findNavController().navigate(action)
+    }
     //endregion
     companion object {
         private const val TAG = "LoginFragment"

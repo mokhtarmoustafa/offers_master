@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.firebase.auth.FirebaseAuth
 import com.twoam.offers.R
 import com.twoam.offers.data.model.User
@@ -26,7 +27,10 @@ class RegisterFragment : Fragment() {
     //region variables
     private val viewModel: RegisterViewModel by viewModels()
     private lateinit var binding: FragmentRegisterBinding
+    private val args: RegisterFragmentArgs by navArgs()
+
     //endregion
+    private var user = User()
 
     //region events
     override fun onCreateView(
@@ -34,7 +38,7 @@ class RegisterFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentRegisterBinding.inflate(inflater, container, false)
-
+        binding.tiRule.isVisible = args.type == EMPLOYEE
         return binding.root
     }
 
@@ -73,14 +77,16 @@ class RegisterFragment : Fragment() {
         val telephone = binding.etTelephone.text.toString().trim()
         val rule = binding.etRule.text.toString().trim()
         val password = binding.etPassword.text.toString().trim()
-        val user = User(
+        val type = args.type
+        user = User(
             name = name,
             email = email,
             telephone = telephone,
             rule = rule,
-            password = password
+            password = password,
+            type = type
         )
-        Log.d(TAG, "register: $user")
+        Log.d(TAG, "register - USER: $user")
         binding.progress.isVisible = true
         viewModel.register(user)
 
@@ -93,7 +99,9 @@ class RegisterFragment : Fragment() {
                 }
                 is Resource.Success -> {
                     binding.progress.isVisible = false
-                    findNavController().navigate(R.id.action_registerFragment_to_homeFragment)
+                    val action =
+                        RegisterFragmentDirections.actionRegisterFragmentToHomeFragment(user)
+                    findNavController().navigate(action)
                 }
                 is Resource.Failure -> {
                     binding.progress.isVisible = false
@@ -124,7 +132,7 @@ class RegisterFragment : Fragment() {
             Toast.makeText(requireContext(), "Telephone can't be empty", Toast.LENGTH_SHORT).show()
             binding.etTelephone.requestFocus()
             return false
-        } else if (!isNotEmpty(binding.etRule.text.toString().trim())) {
+        } else if (binding.tiRule.isVisible && !isNotEmpty(binding.etRule.text.toString().trim())) {
             Toast.makeText(requireContext(), "Choose Rule.", Toast.LENGTH_SHORT).show()
             binding.etEmail.requestFocus()
             return false
@@ -167,6 +175,7 @@ class RegisterFragment : Fragment() {
             ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, rules)
         binding.etRule.setAdapter(adapter)
     }
+
     //endregion
 
     companion object {

@@ -53,7 +53,10 @@ class SplashFragment : Fragment() {
                     if (null== result.data)
                         findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
                     else
-                        findNavController().navigate(R.id.action_splashFragment_to_homeFragment)
+                    {
+                        val action=SplashFragmentDirections.actionSplashFragmentToHomeFragment(result.data)
+                        findNavController().navigate(action)
+                    }
                     Log.d(TAG, "onCreateView: ${result.data}")
 
                 }
