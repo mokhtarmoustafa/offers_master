@@ -54,6 +54,8 @@ class RegisterFragment : Fragment() {
             hideKeyboard()
             navigateToLogin()
         }
+
+        binding.ivBack.setOnClickListener { findNavController().navigateUp() }
     }
 
     private fun navigateToLogin() {

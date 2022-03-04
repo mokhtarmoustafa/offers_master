@@ -29,7 +29,7 @@
         <action android:id="@+id/profileFragment_to_splashFragment"
             app:destination="@id/splashFragment"
             app:popUpToInclusive="true"
-            app:popUpTo="@id/profileFragment"
+            app:popUpTo="@id/homeFragment"
             />
     </fragment>
 
