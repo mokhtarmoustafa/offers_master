@@ -31,7 +31,7 @@ class SplashFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 //        FirebaseAuth.getInstance().signOut()
-        binding = FragmentSplashBinding.inflate(layoutInflater, container, false)
+        binding = FragmentSplashBinding.inflate(inflater, container, false)
 
         object : CountDownTimer(TIMER_DURATION, 1000) {
             override fun onTick(millisUntilFinished: Long) = Unit
