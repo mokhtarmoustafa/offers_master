@@ -30,7 +30,7 @@ class SplashFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        FirebaseAuth.getInstance().signOut()
+//        FirebaseAuth.getInstance().signOut()
         binding = FragmentSplashBinding.inflate(layoutInflater, container, false)
 
         object : CountDownTimer(TIMER_DURATION, 1000) {

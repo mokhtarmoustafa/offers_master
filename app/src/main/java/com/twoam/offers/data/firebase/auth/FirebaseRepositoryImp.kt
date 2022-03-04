@@ -26,7 +26,7 @@ class FirebaseRepositoryImp @Inject constructor(
 
     override suspend fun loginUser(email: String, password: String): Resource<FirebaseUser?> =
         withContext(Dispatchers.IO) {
-           Resource.Loading
+            Resource.Loading
             safeCall {
                 Log.d(TAG, "loginUser: $email  $password")
                 val result = auth.signInWithEmailAndPassword(email, password).await()
@@ -40,6 +40,7 @@ class FirebaseRepositoryImp @Inject constructor(
         withContext(Dispatchers.IO) {
             Resource.Loading
             safeCall {
+                Log.d(TAG, "authNewUser- Update name: ${user.name}")
                 auth.createUserWithEmailAndPassword(user.email, user.password)
                     .addOnCompleteListener {
                         if (it.isSuccessful && it.isComplete) {
@@ -85,13 +86,19 @@ class FirebaseRepositoryImp @Inject constructor(
             Resource.Loading
             safeCall {
                 val authUser = async {
-                    auth.createUserWithEmailAndPassword(user.email, user.password).await()
-                }.await()
-                if (authUser.user != null) {
-                    user.id = authUser.user!!.uid
-                    Log.d(TAG, "createNewUser: ${user.id} ")
+                    auth.createUserWithEmailAndPassword(user.email, user.password) }.await()
+                if (authUser.isSuccessful && authUser.isComplete) {
+                    auth.currentUser?.updateProfile(
+                        UserProfileChangeRequest.Builder().setDisplayName(user.name)
+                            .build()
+                    )
+                    if (authUser.result.user != null) {
+                        user.id = authUser.result.user!!.uid
+                        Log.d(TAG, "createNewUser: ${user.id} ")
+                    }
+                    db.reference.child(USERS).child(user.id).setValue(user).await()
                 }
-                db.reference.child(USERS).child(user.id).setValue(user).await()
+
                 Resource.Success(true)
             }
         }

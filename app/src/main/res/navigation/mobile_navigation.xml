@@ -25,7 +25,14 @@
         android:id="@+id/profileFragment"
         android:name="com.twoam.offers.ui.profile.ProfileFragment"
         android:label="@string/title_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action android:id="@+id/profileFragment_to_splashFragment"
+            app:destination="@id/splashFragment"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/profileFragment"
+            />
+    </fragment>
+
     <fragment
         android:id="@+id/splashFragment"
         android:name="com.twoam.offers.ui.splash.SplashFragment"

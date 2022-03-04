@@ -37,6 +37,7 @@
     <string name="other_benefits">Other Benefits:</string>
     <string name="apply">Apply</string>
     <string name="start_typing">Start typing</string>
+    <string name="logout">Logout</string>
 
     <string-array name="Rules">
 
