@@ -15,10 +15,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.twoam.offers.R
 import com.twoam.offers.data.model.User
 import com.twoam.offers.databinding.FragmentRegisterBinding
-import com.twoam.offers.util.Resource
-import com.twoam.offers.util.isEmailValid
-import com.twoam.offers.util.isNotEmpty
-import com.twoam.offers.util.isPasswordValid
+import com.twoam.offers.util.*
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import javax.xml.validation.Validator
@@ -50,9 +47,11 @@ class RegisterFragment : Fragment() {
         getRules()
 
         binding.btnLogin.setOnClickListener {
+            hideKeyboard()
             register()
         }
         binding.tvLogin.setOnClickListener {
+            hideKeyboard()
             navigateToLogin()
         }
     }

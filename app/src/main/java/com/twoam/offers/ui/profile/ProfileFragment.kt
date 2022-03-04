@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.twoam.offers.R
 import com.twoam.offers.databinding.FragmentProfileBinding
 import com.twoam.offers.util.Resource
+import com.twoam.offers.util.hideKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -71,6 +72,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun logOut() {
+        hideKeyboard()
         profileViewModel.logOut()
         profileViewModel.isOut.observe(this, Observer {
             when (it) {

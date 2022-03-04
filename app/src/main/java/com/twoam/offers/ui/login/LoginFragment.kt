@@ -39,6 +39,7 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnLogin.setOnClickListener {
+            hideKeyboard()
             if (validateAll())
                 login()
         }
