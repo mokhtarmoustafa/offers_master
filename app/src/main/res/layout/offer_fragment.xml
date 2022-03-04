@@ -17,6 +17,15 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/description"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_title"
+        app:layout_constraintStart_toStartOf="@+id/start"
+        app:layout_constraintTop_toTopOf="@+id/tv_title"
+        app:srcCompat="@drawable/ic_back" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/start"
@@ -32,20 +41,22 @@
         android:orientation="vertical"
         app:layout_constraintGuide_end="16dp" />
 
-    <com.google.android.material.tabs.TabLayout
-       android:id="@+id/tabLayout"
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/view_pager"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="2dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintEnd_toStartOf="@id/end"
         app:layout_constraintStart_toEndOf="@id/start"
-        app:layout_constraintTop_toBottomOf="@id/tv_title">
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        >
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/view_pager"
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </com.google.android.material.tabs.TabLayout>
+            android:layout_height="wrap_content"
+            app:tabMode="fixed"/>
+    </androidx.viewpager.widget.ViewPager>
 </androidx.constraintlayout.widget.ConstraintLayout>

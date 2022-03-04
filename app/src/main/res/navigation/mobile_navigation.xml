@@ -89,6 +89,10 @@
         android:id="@+id/offerFragment"
         android:name="com.twoam.offers.ui.offer.OfferFragment"
         android:label="offer_fragment"
-        tools:layout="@layout/offer_fragment" />
+        tools:layout="@layout/offer_fragment" >
+        <argument
+            android:name="offer_data"
+            app:argType="com.twoam.offers.data.model.Offer" />
+    </fragment>
 
 </navigation>

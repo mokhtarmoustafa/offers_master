@@ -4,8 +4,14 @@ import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.getValue
+import com.twoam.offers.data.model.Offer
 import com.twoam.offers.data.model.User
+import com.twoam.offers.util.OFFERS
 import com.twoam.offers.util.Resource
 import com.twoam.offers.util.USERS
 import com.twoam.offers.util.safeCall
@@ -23,6 +29,7 @@ class FirebaseRepositoryImp @Inject constructor(
     FirebaseRepository {
 
     private var currentUser: User? = null
+    private var offersList= mutableListOf<Offer>()
 
     override suspend fun loginUser(email: String, password: String): Resource<FirebaseUser?> =
         withContext(Dispatchers.IO) {
@@ -86,7 +93,8 @@ class FirebaseRepositoryImp @Inject constructor(
             Resource.Loading
             safeCall {
                 val authUser = async {
-                    auth.createUserWithEmailAndPassword(user.email, user.password) }.await()
+                    auth.createUserWithEmailAndPassword(user.email, user.password)
+                }.await()
                 if (authUser.isSuccessful && authUser.isComplete) {
                     auth.currentUser?.updateProfile(
                         UserProfileChangeRequest.Builder().setDisplayName(user.name)
@@ -111,6 +119,26 @@ class FirebaseRepositoryImp @Inject constructor(
     ): Resource<Boolean> {
         TODO("Not yet implemented")
     }
+
+
+    override suspend fun getOffers(userId: String): Resource<List<Offer>> {
+        return withContext(Dispatchers.IO) {
+            safeCall {
+                val postListener = object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        dataSnapshot.children.forEach { offerSnapShot ->
+                            offerSnapShot.getValue(Offer::class.java)?.let { offersList.add(it) }
+                        }
+                    }
+
+                    override fun onCancelled(databaseError: DatabaseError) = Unit
+                }
+                db.reference.child(OFFERS).addValueEventListener(postListener)
+                Resource.Success(offersList)
+            }
+        }
+    }
+
 
     companion object {
         private const val TAG = "FirebaseRepositoryImp"

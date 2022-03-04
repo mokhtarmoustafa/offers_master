@@ -5,6 +5,7 @@ plugins {
     id 'com.google.gms.google-services'
     id 'dagger.hilt.android.plugin'
     id 'kotlin-parcelize'
+    id 'androidx.navigation.safeargs'
 }
 
 android {
@@ -64,7 +65,9 @@ dependencies {
     //navigation
     implementation 'androidx.navigation:navigation-fragment-ktx:2.4.1'
     implementation("androidx.navigation:navigation-ui-ktx:2.4.1")
-   //di - hilt
+
+
+    //di - hilt
     def hilt_version = "2.40.5"
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
