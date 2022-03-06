@@ -8,7 +8,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.ktx.getValue
 import com.twoam.offers.data.model.Offer
 import com.twoam.offers.data.model.User
 import com.twoam.offers.util.OFFERS
@@ -19,6 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 import javax.inject.Inject
 
 
@@ -31,78 +31,75 @@ class FirebaseRepositoryImp @Inject constructor(
     private var currentUser: User? = null
     private var offersList = mutableListOf<Offer>()
 
-    override suspend fun loginUser(email: String, password: String): Resource<FirebaseUser?> =
-        withContext(Dispatchers.IO) {
-            Resource.Loading
-            safeCall {
-                Log.d(TAG, "loginUser: $email  $password")
-                val result = auth.signInWithEmailAndPassword(email, password).await()
-                val user = result.user
-                Resource.Success(user)
-            }
-        }
+    override suspend fun loginUser(
+        email: String,
+        password: String,
+        onResult: (Resource<User?>) -> Unit
+    ) {
+        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
 
-    override suspend fun newLoginUser(email: String, password: String) =
-        withContext(Dispatchers.IO) {
-            safeCall {
-
-                val user = auth.currentUser
-                if (user != null) {
-                    val userListener = object : ValueEventListener {
+            if (it.isComplete && it.isSuccessful) {
+                db.reference.child(USERS).child(auth.currentUser!!.uid)
+                    .addListenerForSingleValueEvent(object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
                             currentUser = snapshot.getValue(User::class.java)
-                            Resource.Success(currentUser)
+                            Log.d(TAG, "onDataChange-currentUser: $currentUser")
+                            onResult(Resource.Success(currentUser))
                         }
 
                         override fun onCancelled(error: DatabaseError) = Unit
+                    })
+
+            } else
+                onResult(Resource.Failure(it.exception!!))
+
+
+        }
+
+    }
+
+    override suspend fun authNewUser(user: User, onResult: (Resource<User?>) -> Unit) {
+        Resource.Loading
+        Log.d(TAG, "authNewUser- Update name: ${user.name}")
+        auth.createUserWithEmailAndPassword(user.email, user.password).addOnCompleteListener {
+            if (it.isComplete && it.isSuccessful) {
+                auth.currentUser?.updateProfile(
+                    UserProfileChangeRequest.Builder().setDisplayName(user.name)
+                        .build()
+                )
+                onResult(Resource.Success(user))
+            } else
+                onResult(Resource.Failure(it.exception!!))
+        }.addOnFailureListener { exception ->
+            onResult(Resource.Failure(exception))
+        }
+
+
+    }
+
+
+    override suspend fun getUserData(onResult: (Resource<User?>) -> Unit) {
+        val user = auth.currentUser
+        if (user != null) {
+            Log.d(TAG, "getUserData: ${user.email}")
+            db.reference.child(USERS).child(user.uid)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        currentUser = snapshot.getValue(User::class.java)
+                        Log.d(TAG, "onDataChange-currentUser: $currentUser")
+                        onResult(Resource.Success(currentUser))
                     }
-                    db.reference.child(USERS).child(user.uid)
-                        .addListenerForSingleValueEvent(userListener)
-//                    Log.d(TAG, "getUserData: ${user.email}")
-//                    currentUser =
-//                        User(id = user.uid, name = user.displayName!!, email = user.email!!)
-                    Resource.Success(currentUser)
-                } else {
-                    Log.d(TAG, "getUserData: NO SUCH USER EXIST")
-                    Resource.Success(null)
-                }
-            }
-        }
 
-    override suspend fun authNewUser(user: User): Resource<Boolean> =
-        withContext(Dispatchers.IO) {
-            Resource.Loading
-            safeCall {
-                Log.d(TAG, "authNewUser- Update name: ${user.name}")
-                auth.createUserWithEmailAndPassword(user.email, user.password)
-                    .addOnCompleteListener {
-                        if (it.isSuccessful && it.isComplete) {
-                            auth.currentUser?.updateProfile(
-                                UserProfileChangeRequest.Builder().setDisplayName(user.name)
-                                    .build()
-                            )
-                        }
+                    override fun onCancelled(error: DatabaseError) {
+                        onResult(Resource.Success(null))
                     }
-                Resource.Success(true)
-            }
-        }
+                })
 
-
-    override suspend fun getUserData(): Resource<User?> =
-        withContext(Dispatchers.IO) {
-            safeCall {
-                val user = auth.currentUser
-                if (user != null) {
-                    Log.d(TAG, "getUserData: ${user.email}")
-                    currentUser =
-                        User(id = user.uid, name = user.displayName!!, email = user.email!!)
-                    Resource.Success(currentUser)
-                } else {
-                    Log.d(TAG, "getUserData: NO SUCH USER EXIST")
-                    Resource.Success(null)
-                }
-            }
+        } else {
+            Log.d(TAG, "getUserData: NO SUCH USER EXIST")
+            onResult(Resource.Success(null))
         }
+    }
 
     override suspend fun logOut(): Resource<Boolean> {
         return withContext(Dispatchers.IO) {
@@ -113,71 +110,52 @@ class FirebaseRepositoryImp @Inject constructor(
         }
     }
 
-    override suspend fun createNewUser(user: User): Resource<Boolean> {
-//        return withContext(Dispatchers.IO) {
-            Resource.Loading
-          return   safeCall {
-                val authUser =
-                    withContext(Dispatchers.Default) {
-                        auth.createUserWithEmailAndPassword(user.email, user.password).await()
-                    }
-                if (authUser.user != null) {
-                    user.id = authUser.user!!.uid
-                    Log.d(TAG, "createNewUser: ${user.id} ")
+
+    override suspend fun createNewUser(user: User, onResult: (Resource<Boolean>) -> Unit) {
+        Resource.Loading
+        auth.createUserWithEmailAndPassword(user.email, user.password).addOnCompleteListener {
+            if (it.isSuccessful && it.isComplete) {
+                user.let { _ ->
+                    db.reference.child(USERS).child(it.result.user!!.uid).setValue(user)
                 }
-                db.reference.child(USERS).child(user.id).setValue(user).await()
-                Resource.Success(true)
-            }
-//        }
+                    .addOnCompleteListener {
+                        onResult(Resource.Success(true))
+                    }.addOnFailureListener { exception ->
+                        onResult(Resource.Failure(exception))
+                    }
+
+
+            } else
+                onResult(Resource.Failure(it.exception!!))
+        }
     }
-//        return withContext(Dispatchers.IO) {
-//            Resource.Loading
-//            safeCall {
-//                val authUser = async {
-//                    auth.createUserWithEmailAndPassword(user.email, user.password)
-//                }.await()
-//                if (authUser.isSuccessful && authUser.isComplete) {
-//                    auth.currentUser?.updateProfile(
-//                        UserProfileChangeRequest.Builder().setDisplayName(user.name)
-//                            .build()
-//                    )
-//                    if (authUser.result.user != null) {
-//                        user.id = authUser.result.user!!.uid
-//                        Log.d(TAG, "createNewUser: ${user.id} ")
-//                    }
-//                    db.reference.child(USERS).child(user.id).setValue(user).await()
-//                }
-//
-//                Resource.Success(true)
-//            }
-//        }
-//    }
 
     override suspend fun updateUser(
         userId: String,
         nodeName: String,
         value: Any
     ): Resource<Boolean> {
-        TODO("Not yet implemented")
+        return Resource.Success(true)
     }
 
 
-    override suspend fun getOffers(userId: String): Resource<List<Offer>> {
-        return withContext(Dispatchers.IO) {
-            safeCall {
-                val offerListener = object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        dataSnapshot.children.forEach { offerSnapShot ->
-                            offerSnapShot.getValue(Offer::class.java)?.let { offersList.add(it) }
-                        }
-                    }
+    override suspend fun getOffers(userId: String, onResult: (Resource<List<Offer>>) -> Unit) {
 
-                    override fun onCancelled(databaseError: DatabaseError) = Unit
+        val offerListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                dataSnapshot.children.forEach { offerSnapShot ->
+                    offerSnapShot.getValue(Offer::class.java)?.let { offersList.add(it) }
                 }
-                db.reference.child(OFFERS).addValueEventListener(offerListener)
-                Resource.Success(offersList)
+                onResult(Resource.Success(offersList))
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                onResult(Resource.Failure(databaseError.toException()))
             }
         }
+        db.reference.child(OFFERS).addValueEventListener(offerListener)
+
+
     }
 
 

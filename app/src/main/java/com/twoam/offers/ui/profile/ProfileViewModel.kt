@@ -23,8 +23,10 @@ class ProfileViewModel  @Inject constructor(private val repositoryImp: FirebaseR
     fun getProfileData()
     {
        viewModelScope.launch {
-         val data=  repositoryImp.getUserData()
-           _userData.postValue(data)
+          repositoryImp.getUserData{
+              _userData.postValue(it)
+         }
+
        }
     }
 

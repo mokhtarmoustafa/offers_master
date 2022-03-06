@@ -54,7 +54,7 @@ class HomeFragment : Fragment(), OffersAdapter.Interaction {
         super.onViewCreated(view, savedInstanceState)
         adapter = OffersAdapter(this)
 
-//        getOffers()
+        getOffers()
     }
 
     override fun onDestroyView() {
@@ -87,6 +87,7 @@ class HomeFragment : Fragment(), OffersAdapter.Interaction {
             }
         })
     }
+
 
     private fun newOffer()
     {

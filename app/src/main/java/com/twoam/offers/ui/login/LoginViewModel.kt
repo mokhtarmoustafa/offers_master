@@ -19,8 +19,8 @@ class LoginViewModel @Inject constructor(private val firebaseRepositoryImp: Fire
     ViewModel() {
 
     //region variables
-    private var _success = MutableLiveData<Resource<FirebaseUser?>>()
-    val success: LiveData<Resource<FirebaseUser?>> get() = _success
+    private var _success = MutableLiveData<Resource<User?>>()
+    val success: LiveData<Resource<User?>> get() = _success
     //endregion
 
 
@@ -29,9 +29,11 @@ class LoginViewModel @Inject constructor(private val firebaseRepositoryImp: Fire
     fun login(email: String, password: String) {
 
         viewModelScope.launch (Dispatchers.Main){
-          val user=  firebaseRepositoryImp.loginUser(email, password)
-            Log.d(TAG, "login: $user")
-            _success.postValue(user)
+          firebaseRepositoryImp.loginUser(email, password){
+              Log.d(TAG, "login: $it")
+              _success.postValue(it)
+          }
+
         }
     }
 

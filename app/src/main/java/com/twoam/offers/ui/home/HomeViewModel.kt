@@ -27,8 +27,10 @@ class HomeViewModel @Inject constructor(val repositoryImp: FirebaseRepositoryImp
      fun getOffers() {
         viewModelScope.launch {
             val userId = FirebaseAuth.getInstance().currentUser?.uid
-           val data= repositoryImp.getOffers(userId!!)
-            _offersData.postValue(data)
+           repositoryImp.getOffers(userId!!){
+               _offersData.postValue(it)
+           }
+
         }
     }
     //endregion

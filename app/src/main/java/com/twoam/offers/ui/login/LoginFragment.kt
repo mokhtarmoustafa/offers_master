@@ -1,6 +1,7 @@
 package com.twoam.offers.ui.login
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -86,8 +87,9 @@ class LoginFragment : Fragment() {
                     binding.progressBar.isVisible = false
                     if (result.data != null)
                     {
+                        Log.d(TAG, "login: ${result.data }")
 //                        val user=User(id=result.data.uid,email= result.data.email!!,name= result.data.displayName!!)
-                        val action=LoginFragmentDirections.actionLoginFragmentToHomeFragment(User())
+                        val action=LoginFragmentDirections.actionLoginFragmentToHomeFragment(result.data)
                         findNavController().navigate(action)
                     }
                     else

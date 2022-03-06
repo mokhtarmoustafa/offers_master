@@ -26,8 +26,10 @@ class RegisterViewModel @Inject constructor(private val firebaseRepositoryImp: F
     //region helper functions
     fun register(user: User) {
         viewModelScope.launch(Dispatchers.IO) {
-            val done = firebaseRepositoryImp.createNewUser(user)
-            _success.postValue(done)
+            firebaseRepositoryImp.createNewUser(user){
+                _success.postValue(it)
+            }
+
 
         }
     }
