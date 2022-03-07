@@ -1,12 +1,16 @@
 package com.twoam.offers.di.auth
 
+import android.content.Context
+import android.content.SharedPreferences
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.twoam.offers.data.firebase.auth.FirebaseRepository
 import com.twoam.offers.data.firebase.auth.FirebaseRepositoryImp
+import com.twoam.offers.util.PREF_NAME
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -32,5 +36,6 @@ object AuthModule {
     fun provideDb(): FirebaseDatabase {
         return FirebaseDatabase.getInstance()
     }
+
 
 }

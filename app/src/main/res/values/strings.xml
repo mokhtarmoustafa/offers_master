@@ -39,6 +39,7 @@
     <string name="start_typing">Start typing</string>
     <string name="logout">Logout</string>
     <string name="no_offer_yet">No Offer yet</string>
+  <string name="no_user">No User Exist with this data.</string>
 
     <string-array name="Rules">
 
